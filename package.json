@@ -1,0 +1,29 @@
+{
+  "name": "trustnet",
+  "version": "1.0.0",
+  "description": "CLI for attested journalism trust network with sybil attack detection",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "tn": "./src/index.js"
+  },
+  "scripts": {
+    "dev": "node ./src/index.js",
+    "server": "node ./src/server.js"
+  },
+  "keywords": [
+    "journalism",
+    "trust",
+    "blockchain",
+    "attestation"
+  ],
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "aqua-js-sdk": "^3.2.1-44",
+    "commander": "^12.0.0",
+    "dotenv": "^17.2.3",
+    "ethers": "^6.10.0",
+    "express": "^4.18.2"
+  }
+}
