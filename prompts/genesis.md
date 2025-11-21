@@ -11,3 +11,4 @@ It consists of:
 4. "Local graph structure" trust algorithms: processing of attestations to quantify directional trust between nodes. For instance, consider a journalist A, publisher B, and the reader C. As an independent journalist, journalist A may not have the email proof credential, but C sees that A is trusted by B, then C may deem A to be trustworthy, at least in this trust dimension.
 
 The CLI program name is `tn` (stands for "trustnet") and will have commands such as `trust` (to create a signed vouch of an Ethereum address to be sent to the public ledger), `inspect` (to reveal the trust vector of an account), `mint` (to mint a credential, e.g. email proof).
+The license is Apache-2.0.
