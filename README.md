@@ -36,7 +36,7 @@ The server runs on `http://localhost:3000`.
 ### 2. Register Your Account
 
 ```bash
-npm exec tn mint account
+./tn mint account
 ```
 
 This creates a wallet if you don't have one and registers your address in the network.
@@ -44,31 +44,43 @@ This creates a wallet if you don't have one and registers your address in the ne
 ### 3. Submit a Trust Vote
 
 ```bash
-npm exec tn trust 0x1234567890123456789012345678901234567890
+./tn trust 0x1234567890123456789012345678901234567890
 ```
 
 To submit a distrust vote:
 
 ```bash
-npm exec tn trust 0x1234567890123456789012345678901234567890 --distrust
+./tn trust 0x1234567890123456789012345678901234567890 --distrust
 ```
 
 ### 4. Inspect Trust Vector
 
 ```bash
-npm exec tn inspect 0x1234567890123456789012345678901234567890
+./tn inspect 0x1234567890123456789012345678901234567890
 ```
 
 With detailed vote information:
 
 ```bash
-npm exec tn inspect 0x1234567890123456789012345678901234567890 --verbose
+./tn inspect 0x1234567890123456789012345678901234567890 --verbose
+```
+
+Export as JSON for easy parsing:
+
+```bash
+./tn inspect 0x1234567890123456789012345678901234567890 --json
+```
+
+Combine verbose and JSON output:
+
+```bash
+./tn inspect 0x1234567890123456789012345678901234567890 --json --verbose
 ```
 
 ### 5. Mint Email Proof Credential
 
 ```bash
-npm exec tn mint email --email journalist@nytimes.com
+./tn mint email --email journalist@nytimes.com
 ```
 
 This creates an Aqua-verified credential linking your Ethereum address to your email domain.
@@ -78,15 +90,15 @@ This creates an Aqua-verified credential linking your Ethereum address to your e
 View current configuration:
 
 ```bash
-npm exec tn config
+./tn config
 ```
 
 Update configuration:
 
 ```bash
-npm exec tn config --min-account-age 30 --min-attestation-age 7
-npm exec tn config --eigen-iterations 25 --eigen-epsilon 0.0001
-npm exec tn config --time-decay 0.6
+./tn config --min-account-age 30 --min-attestation-age 7
+./tn config --eigen-iterations 25 --eigen-epsilon 0.0001
+./tn config --time-decay 0.6
 ```
 
 Configuration parameters:
@@ -133,9 +145,9 @@ TrustNet looks for credentials in:
 You can use the `--config` flag to specify a custom credentials file:
 
 ```bash
-npm exec tn --config alice.json mint account
-npm exec tn --config bob.json trust 0x1234567890123456789012345678901234567890
-npm exec tn --config charlie.json mint email --email charlie@reuters.com
+./tn --config alice.json mint account
+./tn --config bob.json trust 0x1234567890123456789012345678901234567890
+./tn --config charlie.json mint email --email charlie@reuters.com
 ```
 
 This is particularly useful for testing with multiple accounts.
@@ -216,9 +228,9 @@ echo '{"mnemonic":"other1 other2 ... other12"}' > bob.json
 echo '{"mnemonic":"another1 another2 ... another12"}' > charlie.json
 
 # Register all accounts
-npm exec tn --config alice.json mint account
-npm exec tn --config bob.json mint account
-npm exec tn --config charlie.json mint account
+./tn --config alice.json mint account
+./tn --config bob.json mint account
+./tn --config charlie.json mint account
 
 # Get addresses
 ALICE=$(cat data/accounts.json | jq -r 'keys[0]')
@@ -226,16 +238,16 @@ BOB=$(cat data/accounts.json | jq -r 'keys[1]')
 CHARLIE=$(cat data/accounts.json | jq -r 'keys[2]')
 
 # Mint email credentials for each
-npm exec tn --config alice.json mint email --email alice@nytimes.com
-npm exec tn --config bob.json mint email --email bob@reuters.com
+./tn --config alice.json mint email --email alice@nytimes.com
+./tn --config bob.json mint email --email bob@reuters.com
 
 # Create trust network: Alice trusts Bob, Bob trusts Charlie
-npm exec tn --config alice.json trust $BOB
-npm exec tn --config bob.json trust $CHARLIE
+./tn --config alice.json trust $BOB
+./tn --config bob.json trust $CHARLIE
 
 # Inspect trust scores
-npm exec tn inspect $BOB --verbose
-npm exec tn inspect $CHARLIE --verbose
+./tn inspect $BOB --verbose
+./tn inspect $CHARLIE --verbose
 ```
 
 ## Security Considerations

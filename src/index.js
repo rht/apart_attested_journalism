@@ -28,6 +28,7 @@ program
   .command('inspect <address>')
   .description('Inspect trust vector for an address')
   .option('-v, --verbose', 'Show detailed vote information')
+  .option('-j, --json', 'Output as JSON for easy parsing')
   .action((address, options, command) => {
     const globalOpts = command.parent.opts();
     inspectCommand(address, { ...options, configPath: globalOpts.config });
