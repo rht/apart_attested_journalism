@@ -11,26 +11,36 @@ const program = new Command();
 program
   .name('tn')
   .description('TrustNet - CLI for attested journalism trust network')
-  .version('1.0.0');
+  .version('1.0.0')
+  .option('-c, --config <path>', 'Path to credentials.json file');
 
 program
   .command('trust <address>')
   .description('Submit a trust vote for an address')
   .option('-d, --distrust', 'Submit a distrust vote instead')
   .option('-s, --server <url>', 'Ledger server URL', 'http://localhost:3000')
-  .action(trustCommand);
+  .action((address, options, command) => {
+    const globalOpts = command.parent.opts();
+    trustCommand(address, { ...options, configPath: globalOpts.config });
+  });
 
 program
   .command('inspect <address>')
   .description('Inspect trust vector for an address')
   .option('-v, --verbose', 'Show detailed vote information')
-  .action(inspectCommand);
+  .action((address, options, command) => {
+    const globalOpts = command.parent.opts();
+    inspectCommand(address, { ...options, configPath: globalOpts.config });
+  });
 
 program
   .command('mint <type>')
   .description('Mint a credential (types: email, account)')
   .option('-e, --email <email>', 'Email address for email proof')
-  .action(mintCommand);
+  .action((type, options, command) => {
+    const globalOpts = command.parent.opts();
+    mintCommand(type, { ...options, configPath: globalOpts.config });
+  });
 
 program
   .command('config')

@@ -5,7 +5,7 @@ import { loadAccounts, saveAccounts } from '../storage.js';
 
 export async function mintCommand(type, options) {
   try {
-    const wallet = loadWallet();
+    const wallet = loadWallet(options.configPath);
 
     if (type === 'email') {
       await mintEmailProof(wallet, options);

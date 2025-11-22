@@ -1,7 +1,20 @@
 import { ethers } from 'ethers';
 import fs from 'fs';
 
-export function loadWallet() {
+export function loadWallet(configPath = null) {
+  // If custom config path is provided, use it exclusively
+  if (configPath) {
+    if (!fs.existsSync(configPath)) {
+      throw new Error(`Config file not found: ${configPath}`);
+    }
+    const creds = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+    if (!creds.mnemonic) {
+      throw new Error(`No mnemonic found in config file: ${configPath}`);
+    }
+    return ethers.Wallet.fromPhrase(creds.mnemonic);
+  }
+
+  // Default behavior: check credentials.json, then .env
   if (fs.existsSync('./credentials.json')) {
     const creds = JSON.parse(fs.readFileSync('./credentials.json', 'utf-8'));
     if (creds.mnemonic) {

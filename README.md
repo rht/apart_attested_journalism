@@ -130,6 +130,16 @@ TrustNet looks for credentials in:
 2. `./.env` (MNEMONIC field)
 3. Creates new random wallet if none found
 
+You can use the `--config` flag to specify a custom credentials file:
+
+```bash
+npm exec tn --config alice.json mint account
+npm exec tn --config bob.json trust 0x1234567890123456789012345678901234567890
+npm exec tn --config charlie.json mint email --email charlie@reuters.com
+```
+
+This is particularly useful for testing with multiple accounts.
+
 Example `credentials.json`:
 ```json
 {
@@ -177,6 +187,8 @@ The mock ledger server provides:
 
 ## Example Workflow
 
+### Basic Single Account
+
 ```bash
 # Terminal 1: Start server
 npm run server
@@ -185,21 +197,45 @@ npm run server
 tn mint account
 ALICE=$(cat data/accounts.json | jq -r 'keys[0]')
 
-# Create another wallet for Bob (in separate directory or modify credentials)
-tn mint account
-BOB=$(cat data/accounts.json | jq -r 'keys[1]')
-
 # Mint email credential
 tn mint email --email alice@nytimes.com
 
-# Alice trusts Bob
-tn trust $BOB
-
-# Inspect Bob's trust
-tn inspect $BOB --verbose
-
 # Inspect Alice's trust
 tn inspect $ALICE --verbose
+```
+
+### Multi-Account Testing with --config Flag
+
+```bash
+# Terminal 1: Start server
+npm run server
+
+# Terminal 2: Create separate credential files for different accounts
+echo '{"mnemonic":"word1 word2 ... word12"}' > alice.json
+echo '{"mnemonic":"other1 other2 ... other12"}' > bob.json
+echo '{"mnemonic":"another1 another2 ... another12"}' > charlie.json
+
+# Register all accounts
+npm exec tn --config alice.json mint account
+npm exec tn --config bob.json mint account
+npm exec tn --config charlie.json mint account
+
+# Get addresses
+ALICE=$(cat data/accounts.json | jq -r 'keys[0]')
+BOB=$(cat data/accounts.json | jq -r 'keys[1]')
+CHARLIE=$(cat data/accounts.json | jq -r 'keys[2]')
+
+# Mint email credentials for each
+npm exec tn --config alice.json mint email --email alice@nytimes.com
+npm exec tn --config bob.json mint email --email bob@reuters.com
+
+# Create trust network: Alice trusts Bob, Bob trusts Charlie
+npm exec tn --config alice.json trust $BOB
+npm exec tn --config bob.json trust $CHARLIE
+
+# Inspect trust scores
+npm exec tn inspect $BOB --verbose
+npm exec tn inspect $CHARLIE --verbose
 ```
 
 ## Security Considerations

@@ -2,7 +2,7 @@ import { loadWallet, signVote } from '../crypto.js';
 
 export async function trustCommand(targetAddress, options) {
   try {
-    const wallet = loadWallet();
+    const wallet = loadWallet(options.configPath);
     const trust = !options.distrust;
 
     const voteData = {
