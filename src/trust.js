@@ -1,7 +1,7 @@
 import { loadAccounts, loadConfig } from './storage.js';
 import { calculateTrustScores, calculatePeerVoteScore } from './eigentrust.js';
 
-export function calculateTrustVector(address) {
+export function calculateTrustVector(address, dampingFactor, queryingAddress) {
   const accounts = loadAccounts();
   const config = loadConfig();
   const now = Date.now();
@@ -15,7 +15,7 @@ export function calculateTrustVector(address) {
   const x509Score = calculateX509Score(account);
   const peerVoteScore = calculatePeerVoteScore(address);
   const timeBasedScore = calculateTimeBasedScore(account, config, now);
-  const graphScore = calculateTrustScores(address);
+  const graphScore = calculateTrustScores(address, dampingFactor, queryingAddress);
 
   const weights = { x509: 0.25, peer: 0.35, time: 0.15, graph: 0.25 };
   const overallScore =
@@ -31,6 +31,7 @@ export function calculateTrustVector(address) {
     timeBasedScore,
     graphScore,
     overallScore,
+    dampingFactor,
     metadata: {
       x509Credentials: account.credentials || [],
       accountAge: now - account.createdAt,

@@ -1,15 +1,22 @@
 import { calculateTrustVector } from '../trust.js';
 import { loadVotes } from '../storage.js';
+import { loadWallet, loadDampingFactor } from '../crypto.js';
 
 export async function inspectCommand(address, options) {
   try {
-    const trustVector = calculateTrustVector(address);
+    // Load damping factor and querying address from credentials
+    const dampingFactor = loadDampingFactor(options.configPath);
+    const wallet = loadWallet(options.configPath);
+    const queryingAddress = wallet.address;
+
+    const trustVector = calculateTrustVector(address, dampingFactor, queryingAddress);
 
     if (options.json) {
       // JSON output mode
       const output = {
         address: address,
         overallScore: trustVector.overallScore,
+        dampingFactor: trustVector.dampingFactor,
         componentScores: {
           x509: trustVector.x509Score,
           peerVote: trustVector.peerVoteScore,
@@ -45,6 +52,7 @@ export async function inspectCommand(address, options) {
       console.log(`  Trust Vector for ${address}`);
       console.log(`═══════════════════════════════════════════════════════`);
       console.log(`\n  Overall Trust Score: ${(trustVector.overallScore * 100).toFixed(2)}%`);
+      console.log(`\n  Damping Factor: ${trustVector.dampingFactor}`);
       console.log(`\n  Component Scores:`);
       console.log(`    X.509 Credentials:  ${(trustVector.x509Score * 100).toFixed(2)}%`);
       console.log(`    Peer Votes:         ${(trustVector.peerVoteScore * 100).toFixed(2)}%`);

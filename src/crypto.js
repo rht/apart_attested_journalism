@@ -47,3 +47,19 @@ export function verifyVoteSignature(signedVote) {
   const recoveredAddress = ethers.verifyMessage(message, signedVote.signature);
   return recoveredAddress.toLowerCase() === signedVote.vote.from.toLowerCase();
 }
+
+export function loadDampingFactor(configPath = null) {
+  const credFile = configPath || './credentials.json';
+
+  if (!fs.existsSync(credFile)) {
+    throw new Error(`Credentials file not found: ${credFile}. Damping factor must be specified in user credentials.`);
+  }
+
+  const creds = JSON.parse(fs.readFileSync(credFile, 'utf-8'));
+
+  if (creds.dampingFactor === undefined) {
+    throw new Error(`No dampingFactor found in ${credFile}. Add "dampingFactor": 0.2 to your credentials file.`);
+  }
+
+  return creds.dampingFactor;
+}

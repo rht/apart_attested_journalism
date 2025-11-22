@@ -139,6 +139,27 @@ async function mintAccount(wallet, options) {
 
   saveAccounts(accounts);
 
+  // Save damping factor to credentials.json
+  const dampingFactor = parseFloat(options.dampingFactor);
+  const credPath = options.configPath || './credentials.json';
+
+  let creds = {};
+  if (fs.existsSync(credPath)) {
+    creds = JSON.parse(fs.readFileSync(credPath, 'utf-8'));
+  }
+
+  // Add mnemonic if not present
+  if (!creds.mnemonic && wallet.mnemonic) {
+    creds.mnemonic = wallet.mnemonic.phrase;
+  }
+
+  // Set damping factor
+  creds.dampingFactor = dampingFactor;
+
+  fs.writeFileSync(credPath, JSON.stringify(creds, null, 2));
+
   console.log('✓ Account registered successfully');
   console.log(`  Created: ${new Date(accounts[address].createdAt).toISOString()}`);
+  console.log(`  Damping Factor: ${dampingFactor}`);
+  console.log(`  Credentials saved to: ${credPath}`);
 }

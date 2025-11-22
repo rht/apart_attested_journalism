@@ -1,11 +1,66 @@
 import { loadVotes, loadConfig } from './storage.js';
 
-export function calculateTrustScores(targetAddress = null) {
+function calculatePretrustVector(queryingAddress, votes, nodeList, nodeIndex) {
+  const n = nodeList.length;
+  const pretrustVector = Array(n).fill(0);
+
+  if (!queryingAddress) {
+    // No querying address, use uniform distribution
+    for (let i = 0; i < n; i++) {
+      pretrustVector[i] = 1 / n;
+    }
+    return pretrustVector;
+  }
+
+  const queryingAddr = queryingAddress.toLowerCase();
+  const queryingIdx = nodeIndex[queryingAddr];
+
+  if (queryingIdx === undefined) {
+    // Querying address not in network, use uniform distribution
+    for (let i = 0; i < n; i++) {
+      pretrustVector[i] = 1 / n;
+    }
+    return pretrustVector;
+  }
+
+  // Find direct trust votes from the querying user (1-hop peers)
+  const directTrusts = votes.filter(v =>
+    v.vote.from.toLowerCase() === queryingAddr && v.vote.trust
+  );
+
+  if (directTrusts.length > 0) {
+    // Set pretrust based on who the querying user directly trusts
+    directTrusts.forEach(v => {
+      const trustedAddr = v.vote.to.toLowerCase();
+      const trustedIdx = nodeIndex[trustedAddr];
+      if (trustedIdx !== undefined) {
+        pretrustVector[trustedIdx] = 1;
+      }
+    });
+
+    // Normalize pretrust vector
+    const pretrustSum = pretrustVector.reduce((a, b) => a + b, 0);
+    if (pretrustSum > 0) {
+      for (let i = 0; i < n; i++) {
+        pretrustVector[i] /= pretrustSum;
+      }
+    }
+  } else {
+    // No direct trusts, use uniform distribution
+    for (let i = 0; i < n; i++) {
+      pretrustVector[i] = 1 / n;
+    }
+  }
+
+  return pretrustVector;
+}
+
+export function calculateTrustScores(targetAddress, dampingFactor, queryingAddress) {
   const votes = loadVotes();
   const config = loadConfig();
 
   if (votes.length === 0) {
-    return targetAddress ? { address: targetAddress, score: 0 } : {};
+    return 0;
   }
 
   const nodes = new Set();
@@ -46,14 +101,25 @@ export function calculateTrustScores(targetAddress = null) {
     }
   }
 
+  // Calculate pretrust vector based on querying user's direct trust votes (1-hop peers)
+  const pretrustVector = calculatePretrustVector(queryingAddress, votes, nodeList, nodeIndex);
+
   let trustVector = Array(n).fill(1 / n);
 
   for (let iter = 0; iter < config.eigenTrustIterations; iter++) {
     const newTrustVector = Array(n).fill(0);
 
     for (let i = 0; i < n; i++) {
+      // Apply damping factor: t_i = (1-a) * sum(C_ji * t_j) + a * p_i
+      let propagatedTrust = 0;
       for (let j = 0; j < n; j++) {
-        newTrustVector[i] += trustMatrix[j][i] * trustVector[j];
+        propagatedTrust += trustMatrix[j][i] * trustVector[j];
+      }
+
+      if (dampingFactor > 0 && queryingAddress) {
+        newTrustVector[i] = (1 - dampingFactor) * propagatedTrust + dampingFactor * pretrustVector[i];
+      } else {
+        newTrustVector[i] = propagatedTrust;
       }
     }
 
@@ -75,7 +141,7 @@ export function calculateTrustScores(targetAddress = null) {
     scores[node] = trustVector[i];
   });
 
-  return targetAddress ? scores[targetAddress.toLowerCase()] || 0 : scores;
+  return scores[targetAddress.toLowerCase()] || 0;
 }
 
 export function calculatePeerVoteScore(address) {

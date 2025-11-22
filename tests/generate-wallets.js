@@ -64,7 +64,8 @@ function saveWalletCredentials(wallets, outputDir) {
   wallets.forEach(wallet => {
     const filename = `${outputDir}/${wallet.id}.json`;
     const credentials = {
-      mnemonic: wallet.mnemonic
+      mnemonic: wallet.mnemonic,
+      dampingFactor: 0.2
     };
     fs.writeFileSync(filename, JSON.stringify(credentials, null, 2));
   });

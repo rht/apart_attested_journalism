@@ -38,6 +38,7 @@ program
   .command('mint <type>')
   .description('Mint a credential (types: email, account)')
   .option('-e, --email <email>', 'Email address for email proof')
+  .option('-d, --damping-factor <value>', 'Damping factor for EigenTrust (default: 0.2)', '0.2')
   .action((type, options, command) => {
     const globalOpts = command.parent.opts();
     mintCommand(type, { ...options, configPath: globalOpts.config });
