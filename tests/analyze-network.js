@@ -6,6 +6,10 @@
  * Analyzes trust scores across legitimate and sybil networks
  * to demonstrate the effectiveness of sybil attack detection.
  *
+ * All trust scores are calculated from the perspective of a single
+ * legitimate node (the first legitimate account), providing a consistent
+ * point of view for evaluating trust across the entire network.
+ *
  * Usage:
  *   node analyze-network.js
  *
@@ -92,12 +96,24 @@ async function analyzeNetwork() {
   // Load addresses
   const addresses = JSON.parse(fs.readFileSync('tests/addresses.json', 'utf-8'));
 
+  // Use the first legitimate account as the observer node
+  const observerNode = addresses.legitimate[0];
+  const observerConfig = `tests/credentials/legitimate/${observerNode.id}.json`;
+
+  console.log('Observer Node (Point of View):');
+  console.log('-------------------------------------------');
+  console.log(`  ${observerNode.id} (${observerNode.address})`);
+  console.log('');
+  console.log('All trust scores are calculated from this node\'s perspective.');
+  console.log('');
+
   console.log('Analyzing Legitimate Network...');
   console.log('-------------------------------------------');
 
   const legitimateScores = [];
   for (const account of addresses.legitimate) {
-    const score = getTrustScore(account.address, `tests/credentials/legitimate/${account.id}.json`);
+    // Use the observer node's credentials for all evaluations
+    const score = getTrustScore(account.address, observerConfig);
     legitimateScores.push(score);
     console.log(`  ${account.id}: ${score.overall.toFixed(2)}% (x509: ${score.x509.toFixed(1)}%, peer: ${score.peer.toFixed(1)}%, time: ${score.time.toFixed(1)}%, graph: ${score.graph.toFixed(1)}%)`);
   }
@@ -108,7 +124,8 @@ async function analyzeNetwork() {
 
   const sybilScores = [];
   for (const account of addresses.sybil) {
-    const score = getTrustScore(account.address, `tests/credentials/sybil/${account.id}.json`);
+    // Use the observer node's credentials for all evaluations
+    const score = getTrustScore(account.address, observerConfig);
     sybilScores.push(score);
     console.log(`  ${account.id}: ${score.overall.toFixed(2)}% (x509: ${score.x509.toFixed(1)}%, peer: ${score.peer.toFixed(1)}%, time: ${score.time.toFixed(1)}%, graph: ${score.graph.toFixed(1)}%)`);
   }
@@ -200,6 +217,10 @@ async function analyzeNetwork() {
   // Save results to JSON
   const results = {
     timestamp: new Date().toISOString(),
+    observerNode: {
+      id: observerNode.id,
+      address: observerNode.address
+    },
     legitimate: {
       scores: legitimateScores,
       statistics: {

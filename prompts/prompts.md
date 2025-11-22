@@ -8,3 +8,5 @@ nodes that are very loosely connected to the 1st network. the script must genera
 deterministically. put the code and documentation in tests/ folder. the folder doesn't exist yet and you must create it.
 # 4
 can you read @README.md and implement damping factor of 0.2 to the eigentrust algorithm? make it configurable so that every user can choose their own damping factor, but include the damping factor number in the inspect output (both text and json output). i emphasize that the damping is a subjective user-specific param, not a global param, so that it should be stored in the acount's credentials.json and NOT ever read from .env or any server config. to implement this version of the damping factor, you need to also take into account of damping_factor * (pretrusted immediate 1-hop peers)
+# 5
+can you read @tests/README.md and improve the @tests/analyze-network.js so that the trust scores are all from the point of view of the same single legitimate node?
