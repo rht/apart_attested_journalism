@@ -36,7 +36,7 @@ The server runs on `http://localhost:3000`.
 ### 2. Register Your Account
 
 ```bash
-tn mint account
+npm exec tn mint account
 ```
 
 This creates a wallet if you don't have one and registers your address in the network.
@@ -44,31 +44,31 @@ This creates a wallet if you don't have one and registers your address in the ne
 ### 3. Submit a Trust Vote
 
 ```bash
-tn trust 0x1234567890123456789012345678901234567890
+npm exec tn trust 0x1234567890123456789012345678901234567890
 ```
 
 To submit a distrust vote:
 
 ```bash
-tn trust 0x1234567890123456789012345678901234567890 --distrust
+npm exec tn trust 0x1234567890123456789012345678901234567890 --distrust
 ```
 
 ### 4. Inspect Trust Vector
 
 ```bash
-tn inspect 0x1234567890123456789012345678901234567890
+npm exec tn inspect 0x1234567890123456789012345678901234567890
 ```
 
 With detailed vote information:
 
 ```bash
-tn inspect 0x1234567890123456789012345678901234567890 --verbose
+npm exec tn inspect 0x1234567890123456789012345678901234567890 --verbose
 ```
 
 ### 5. Mint Email Proof Credential
 
 ```bash
-tn mint email --email journalist@nytimes.com
+npm exec tn mint email --email journalist@nytimes.com
 ```
 
 This creates an Aqua-verified credential linking your Ethereum address to your email domain.
@@ -78,15 +78,15 @@ This creates an Aqua-verified credential linking your Ethereum address to your e
 View current configuration:
 
 ```bash
-tn config
+npm exec tn config
 ```
 
 Update configuration:
 
 ```bash
-tn config --min-account-age 30 --min-attestation-age 7
-tn config --eigen-iterations 25 --eigen-epsilon 0.0001
-tn config --time-decay 0.6
+npm exec tn config --min-account-age 30 --min-attestation-age 7
+npm exec tn config --eigen-iterations 25 --eigen-epsilon 0.0001
+npm exec tn config --time-decay 0.6
 ```
 
 Configuration parameters:
