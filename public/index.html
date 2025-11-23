@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Trust Explorer</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="/style.css" />
+  <!-- vis-network CDN -->
+  <script src="https://unpkg.com/vis-network@9.1.2/standalone/umd/vis-network.min.js"></script>
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <img src="/mnt/data/4fe43413-a0b6-4f5a-8a3b-37607be68c74.png" alt="logo" class="logo" />
+      <h1>Trust Explorer</h1>
+      <div class="search">
+        <input id="searchInput" placeholder="Search address (0x...)" />
+        <button id="searchBtn">Go</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <div id="network" class="network"></div>
+      <aside class="sidebar">
+        <h3>Details</h3>
+        <div id="selectedAddress">Selected: —</div>
+        <div id="trustScore"></div>
+
+        <section>
+          <h4>Received</h4>
+          <div id="receivedList" class="list"></div>
+        </section>
+
+        <section>
+          <h4>Sent</h4>
+          <div id="sentList" class="list"></div>
+        </section>
+
+        <button id="clearBtn">Clear selection</button>
+      </aside>
+    </main>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
