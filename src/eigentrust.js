@@ -115,7 +115,7 @@ export function calculateTrustScores(targetAddress, dampingFactor, queryingAddre
       for (let j = 0; j < n; j++) {
         propagatedTrust += trustMatrix[j][i] * trustVector[j];
       }
-
+       //Core implementation of Damping Factor within eigentrust
       if (dampingFactor > 0 && queryingAddress) {
         newTrustVector[i] = (1 - dampingFactor) * propagatedTrust + dampingFactor * pretrustVector[i];
       } else {
