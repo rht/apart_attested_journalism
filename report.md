@@ -109,6 +109,14 @@ Kamvar, S.D.; Schlosser, M.T.; Garcia-Molina, H. (2003). "The Eigentrust algorit
 
 ## Security Considerations
 
+- All votes are cryptographically signed with Ethereum private keys
+- Signature verification happens server-side
+- Vote timestamps are tamper-evident
+- EigenTrust algorithm provides sybil resistance
+- Time-based scoring prevents new account attacks
+- Aqua protocol ensures credential provenance
+
+Possible vulnerabilities:
 1. Temporal attacks. Patient adversaries can pre-build networks months in advance to circumvent the 7-day attestation and 30-day account aging thresholds. Identity recycling allows compromised dormant accounts to retain accumulated trust scores while being repurposed for malicious activity.
 2. Email compromises. Phishing or other methods grants attackers full X.509 benefits for targeted domains. The hardcoded trusted domain list reintroduces centralization without clear governance for additions/removals.
 3. Typosquatting. nytimes.co, rеuters.com with Cyrillic characters, and insider attacks at legitimate outlets can mint valid credentials.
