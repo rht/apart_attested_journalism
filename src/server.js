@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { loadVotes, saveVotes } from './storage.js';
+import { loadVotes, saveVotes, loadAccounts, loadConfig } from './storage.js';
 import { verifyVoteSignature } from './crypto.js';
 import { calculateTrustVector } from './trust.js';
 import path from 'path';
@@ -8,11 +8,14 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
 const app = express();
+
+// serve frontend
 app.use(express.static(path.join(__dirname, '..', 'public')));
-app.use(cors());                    // <-- allow frontend requests
+
+app.use(cors());
 app.use(express.json());
- // <-- serve the frontend from ./public
 
 const PORT = process.env.PORT || 3000;
 
@@ -34,7 +37,9 @@ app.post('/api/vote', (req, res) => {
     const votes = loadVotes();
     const voteWithHash = {
       ...signedVote,
-      txHash: `0x${Date.now().toString(16)}${Math.random().toString(16).slice(2, 10)}`
+      txHash: `0x${Date.now().toString(16)}${Math.random()
+        .toString(16)
+        .slice(2, 10)}`
     };
 
     votes.push(voteWithHash);
@@ -59,9 +64,10 @@ app.get('/api/votes', (req, res) => {
     const { address } = req.query;
 
     if (address) {
-      const filtered = votes.filter(v =>
-        v.vote.from.toLowerCase() === address.toLowerCase() ||
-        v.vote.to.toLowerCase() === address.toLowerCase()
+      const filtered = votes.filter(
+        v =>
+          v.vote.from.toLowerCase() === address.toLowerCase() ||
+          v.vote.to.toLowerCase() === address.toLowerCase()
       );
       return res.json(filtered);
     }
@@ -91,7 +97,6 @@ app.get('/api/votes/:address', (req, res) => {
 
 /* -------------------------
    Trust Score for a Node
-   returns the same structure produced by calculateTrustVector()
 --------------------------*/
 app.get('/api/trust/:address', (req, res) => {
   try {
@@ -111,36 +116,95 @@ app.get('/api/trust/:address', (req, res) => {
 
 /* -------------------------
    Graph Data for Visualization
-   returns nodes[] and edges[]
+   (ENRICHED VERSION)
 --------------------------*/
 app.get('/api/graph', (req, res) => {
   try {
     const votes = loadVotes();
+    const accounts = loadAccounts();
+    const config = loadConfig();
 
-    const nodes = {};   // address -> node
-    const edges = [];   // res edges
+    const nodes = {};
+    const edges = [];
 
+    // Build edges and node base entries
     votes.forEach(v => {
       const from = v.vote.from.toLowerCase();
       const to = v.vote.to.toLowerCase();
 
-      if (!nodes[from]) nodes[from] = { id: from, label: from };
-      if (!nodes[to])   nodes[to]   = { id: to,   label: to };
+      if (!nodes[from]) nodes[from] = { id: from };
+      if (!nodes[to]) nodes[to] = { id: to };
 
       edges.push({
         source: from,
         target: to,
-        weight: v.vote.weight !== undefined ? v.vote.weight : (v.vote.trust ? Number(v.vote.trust) : 1),
+        weight:
+          v.vote.weight !== undefined
+            ? v.vote.weight
+            : v.vote.trust
+            ? Number(v.vote.trust)
+            : 1,
         txHash: v.txHash,
         timestamp: v.vote.timestamp || null
       });
+    });
+
+    // Enrich nodes with accounts.json + heuristics
+    const TRUSTED_DOMAINS = [
+      'nytimes.com',
+      'bbc.com',
+      'reuters.com',
+      'apnews.com',
+      'theguardian.com',
+      'aljazeera.com'
+    ];
+
+    Object.keys(nodes).forEach(addr => {
+      const account = accounts[addr] || {
+        createdAt: null,
+        credentials: []
+      };
+
+      const credentials = account.credentials || [];
+      const credentialDomains = credentials.map(c => c.domain);
+      const credentialCount = credentials.length;
+
+      const hasTrustedDomain = credentialDomains.some(d =>
+        TRUSTED_DOMAINS.includes(d)
+      );
+
+      let accountAgeDays = null;
+      if (account.createdAt) {
+        accountAgeDays = Math.floor(
+          (Date.now() - account.createdAt) / (1000 * 86400)
+        );
+      }
+
+      const outboundEdges = edges.filter(e => e.source === addr).length;
+
+      const isSybil =
+        (!hasTrustedDomain &&
+          credentialCount === 0 &&
+          accountAgeDays !== null &&
+          accountAgeDays < 3) ||
+        outboundEdges > 20;
+
+      nodes[addr] = {
+        id: addr,
+        label: addr.slice(0, 10) + '...',
+        credentialCount,
+        credentialDomains,
+        hasTrustedDomain,
+        accountAgeDays,
+        outboundEdges,
+        isSybil
+      };
     });
 
     res.json({
       nodes: Object.values(nodes),
       edges
     });
-
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

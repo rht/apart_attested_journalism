@@ -1,8 +1,6 @@
 // app.js - simple Trust Explorer (uses vis-network)
 (async function () {
-  // helpers
   function qs(sel) { return document.querySelector(sel); }
-  function el(text) { const d = document.createElement('div'); d.textContent = text; return d; }
 
   const networkContainer = qs('#network');
   const searchInput = qs('#searchInput');
@@ -13,49 +11,69 @@
   const sentList = qs('#sentList');
   const trustScoreEl = qs('#trustScore');
 
-  // fetch graph data
   async function fetchGraph() {
     const res = await fetch('/api/graph');
     return res.json();
   }
 
-  // fetch votes for an address
   async function fetchVotesForAddress(addr) {
     const res = await fetch('/api/votes/' + addr);
     if (!res.ok) return null;
     return res.json();
   }
 
-  // fetch trust summary
   async function fetchTrust(addr) {
     const res = await fetch('/api/trust/' + addr);
     if (!res.ok) return null;
     return res.json();
   }
 
-  // build vis datasets
   const graph = await fetchGraph();
-  const nodes = new vis.DataSet(graph.nodes.map(n => ({
-    id: n.id,
-    label: n.label,
-    title: n.label
-  })));
 
-  const edges = new vis.DataSet(graph.edges.map((e, i) => ({
-    id: 'e' + i,
-    from: e.source,
-    to: e.target,
-    value: e.weight || 1,
-    title: `weight: ${e.weight} tx: ${e.txHash || 'n/a'}`
-  })));
+  // 🚀 ENRICHED NODE DATASET (colors, sizes, labels)
+  const nodes = new vis.DataSet(
+    graph.nodes.map(n => {
+      let color = "#77b7ff"; // default: blue (unknown)
 
-  // vis network options
+      if (n.hasTrustedDomain) color = "#4ade80";    // green = real journalist (trusted newsroom)
+      if (!n.hasTrustedDomain && n.credentialCount > 0) color = "#facc15"; // yellow = independent journo
+      if (n.isSybil) color = "#f87171";             // red = sybil
+
+      let size = 10 + (n.credentialCount * 2);
+      if (n.hasTrustedDomain) size += 6;
+
+      return {
+        id: n.id,
+        label: n.label,
+        size,
+        color: { background: color, border: "#ffffff22" },
+        title: `
+          ${n.id}<br>
+          <b>Credentials:</b> ${n.credentialCount}<br>
+          <b>Trusted newsroom:</b> ${n.hasTrustedDomain}<br>
+          <b>Sybil:</b> ${n.isSybil}<br>
+          <b>Account age:</b> ${n.accountAgeDays || "n/a"} days<br>
+        `
+      };
+    })
+  );
+
+  const edges = new vis.DataSet(
+    graph.edges.map((e, i) => ({
+      id: 'e' + i,
+      from: e.source,
+      to: e.target,
+      value: e.weight || 1,
+      title: `weight: ${e.weight} tx: ${e.txHash || 'n/a'}`
+    }))
+  );
+
   const container = networkContainer;
   const data = { nodes, edges };
+
   const options = {
     nodes: {
       shape: 'dot',
-      size: 10,
       font: { size: 12 }
     },
     edges: {
@@ -74,7 +92,6 @@
     },
     interaction: {
       hover: true,
-      multiselect: false,
       navigationButtons: true,
       keyboard: true
     }
@@ -82,77 +99,72 @@
 
   const network = new vis.Network(container, data, options);
 
-  // node click handler
+  // node click
   network.on('click', async function (params) {
     if (params.nodes && params.nodes.length) {
-      const nodeId = params.nodes[0];
-      selectNode(nodeId);
+      const id = params.nodes[0];
+      selectNode(id);
     } else {
       clearSelection();
     }
   });
 
-  async function selectNode(nodeId) {
-    selectedAddressEl.textContent = 'Selected: ' + nodeId;
-    // fetch votes
-    const votes = await fetchVotesForAddress(nodeId);
+  async function selectNode(id) {
+    selectedAddressEl.textContent = "Selected: " + id;
+    const votes = await fetchVotesForAddress(id);
+
+    receivedList.innerHTML = '';
+    sentList.innerHTML = '';
+
     if (votes) {
-      // populate received
-      receivedList.innerHTML = '';
-      if (votes.received && votes.received.length) {
+      if (votes.received.length === 0) {
+        receivedList.innerHTML = '<div class="item">No received votes</div>';
+      } else {
         votes.received.forEach(r => {
           const div = document.createElement('div');
-          div.className = 'item';
-          div.innerHTML = `<div><strong>From:</strong> ${r.vote.from}</div><div style="font-size:12px;color:#999;"><strong>Trust:</strong> ${r.vote.trust || r.vote.weight || 1} • tx: ${r.txHash || 'n/a'}</div>`;
+          div.className = "item";
+          div.innerHTML = `<div><strong>From:</strong> ${r.vote.from}</div><div style="font-size:12px;color:#999;">Trust: ${r.vote.trust || r.vote.weight || 1} • tx: ${r.txHash}</div>`;
           receivedList.appendChild(div);
         });
-      } else {
-        receivedList.innerHTML = '<div class="item">No received votes</div>';
       }
 
-      // populate sent
-      sentList.innerHTML = '';
-      if (votes.sent && votes.sent.length) {
+      if (votes.sent.length === 0) {
+        sentList.innerHTML = '<div class="item">No sent votes</div>';
+      } else {
         votes.sent.forEach(s => {
           const div = document.createElement('div');
-          div.className = 'item';
-          div.innerHTML = `<div><strong>To:</strong> ${s.vote.to}</div><div style="font-size:12px;color:#999;"><strong>Trust:</strong> ${s.vote.trust || s.vote.weight || 1} • tx: ${s.txHash || 'n/a'}</div>`;
+          div.className = "item";
+          div.innerHTML = `<div><strong>To:</strong> ${s.vote.to}</div><div style="font-size:12px;color:#999;">Trust: ${s.vote.trust || s.vote.weight || 1} • tx: ${s.txHash}</div>`;
           sentList.appendChild(div);
         });
-      } else {
-        sentList.innerHTML = '<div class="item">No sent votes</div>';
       }
-    } else {
-      receivedList.innerHTML = '<div class="item">No data</div>';
-      sentList.innerHTML = '<div class="item">No data</div>';
     }
 
-    // fetch trust score (might be expensive on server — caching recommended later)
-    const trust = await fetchTrust(nodeId);
-    if (trust && typeof trust.overallScore !== 'undefined') {
-      trustScoreEl.textContent = `Overall score: ${((trust.overallScore || 0) * 100).toFixed(2)}%`;
+    const trust = await fetchTrust(id);
+    if (trust && typeof trust.overallScore !== "undefined") {
+      trustScoreEl.textContent = `Overall score: ${(trust.overallScore * 100).toFixed(2)}%`;
     } else {
-      trustScoreEl.textContent = 'Overall score: n/a';
+      trustScoreEl.textContent = "Overall score: n/a";
     }
   }
 
   function clearSelection() {
-    selectedAddressEl.textContent = 'Selected: —';
+    selectedAddressEl.textContent = "Selected: —";
     receivedList.innerHTML = '';
     sentList.innerHTML = '';
     trustScoreEl.textContent = '';
   }
 
-  // search
   searchBtn.addEventListener('click', () => {
     const q = searchInput.value.trim().toLowerCase();
     if (!q) return;
+
     if (!nodes.get(q)) {
-      alert('Address not found in graph');
+      alert("Address not found in graph");
       return;
     }
-    // move camera to node
-    network.focus(q, { scale: 0.1, animation: true });
+
+    network.focus(q, { scale: 0.12, animation: true });
     selectNode(q);
   });
 
@@ -161,6 +173,5 @@
     network.unselectAll();
   });
 
-  // initial hint
   clearSelection();
 })();
