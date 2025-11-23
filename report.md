@@ -27,3 +27,20 @@ Aggregate trust is computed from the trust vector as **Trust(a)** = 0.25·X(a) +
 - Time-Based Score (Tₜ): Penalizes accounts younger than `min_account_age` (30 days). Tₜ(a) = 0 if too young, linearly ramps 0.5→1.0 over 90 days, saturates at 1.0. Old votes decay by factor `time_decay` (0.5).
 - Graph Score (G): Modified EigenTrust with damping factor α = 0.2. Constructs normalized trust matrix C where C[i][j] = votes[i→j] / Σₖ votes[i→k], then iterates t⁽ᵏ⁺¹⁾ = α·Cᵀ·t⁽ᵏ⁾ + (1-α)·(1/n) until convergence (ε = 0.001, max 20 iterations). G(a) = converged trust value, isolating bot clusters that vouch internally but lack external trust edges. We choose the damping factor to be 0.2 to capture the “trust horizon” of about 4 hops, which needs to be more short-sighted than the well -known 6 degrees of separation of human acquaintances.
 The source code is available on GitHub: https://github.com/rht/apart_attested_journalism.
+
+# 3. Results
+
+We simulated a coordinated attack scenario: 10 legitimate journalist accounts with verified email credentials from trusted domains (nytimes.com, reuters.com, etc.) versus 20 attacker-controlled Sybil accounts without credentials. The legitimate network maintained moderate internal connectivity (~60%), while the Sybil cluster created dense internal vouching (~90%) with only 2 sparse bridge connections to legitimate accounts, mimicking real-world botnet behavior where attackers vouch for each other but struggle to gain endorsements from established journalists.
+
+The trust vector approach achieved decisive separation of the overall trust scores between legitimate and Sybil accounts:
+- Legitimate network: Mean 22.56%, Median 27.27% (range 14.63%–27.98%, σ=6.21%)
+- Sybil network: Mean 0.08%, Median 0.08% (uniform across all 20 accounts, σ=0.00%)
+- Detection gap: 22.47 percentage points (99.6% relative difference)
+
+For the component analysis, each dimension independently penalized Sybil accounts:
+
+1. X.509-like Credential Score (weight 0.25): Legitimate 80.0% vs. Sybil 0.0%. Perfect separation—10/10 legitimate accounts held verified email credentials from trusted journalism domains, while 0/20 Sybil accounts possessed any credentials.
+2. Graph Score (weight 0.25): Legitimate 9.93% vs. Sybil 0.03%. EigenTrust's transitive trust calculation isolated the Sybil cluster despite internal vouching density. Bridge connections failed to propagate trust because the Sybil nodes lacked independent credential and temporal verification.
+3. Peer Vote Score (weight 0.35): both 0.0%. All votes were younger than the 7-day `min_attestation_age` threshold, demonstrating temporal defense against rushed attack setup.
+4. Time-Based Score (weight 0.15): both 0.50%. Accounts were uniformly young (below 30-day `min_account_age`), receiving the minimum score. This dimension would further differentiate networks in longitudinal scenarios where legitimate accounts age while Sybil campaigns reset.
+
