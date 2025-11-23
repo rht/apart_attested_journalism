@@ -1,0 +1,227 @@
+{
+  "0x6157364ab3a83aa357f769af11314b0b573c91c1": {
+    "address": "0x6157364ab3a83aa357f769af11314b0b573c91c1",
+    "createdAt": 1763802380765,
+    "credentials": [
+      {
+        "domain": "nytimes.com",
+        "issuer": "self",
+        "issuedAt": 1763802452032,
+        "verificationHash": "0xf55ea76c95c20fed6061c24938f6e45e660d9d8d1307d73df4aef95b91b1c342"
+      }
+    ]
+  },
+  "0xa7a0d9587a6656ccbbc39c2cf86c001fdbce0561": {
+    "address": "0xa7a0d9587a6656ccbbc39c2cf86c001fdbce0561",
+    "createdAt": 1763802383093,
+    "credentials": [
+      {
+        "domain": "reuters.com",
+        "issuer": "self",
+        "issuedAt": 1763802454592,
+        "verificationHash": "0x19b94c4c7f1f3746e819e9d5a283c4f2e3f7af5ec1c232d2878fe29e51d22079"
+      }
+    ]
+  },
+  "0xd38c0b5983161ba544f50925bdb4c28e9a7655cd": {
+    "address": "0xd38c0b5983161ba544f50925bdb4c28e9a7655cd",
+    "createdAt": 1763802385435,
+    "credentials": [
+      {
+        "domain": "apnews.com",
+        "issuer": "self",
+        "issuedAt": 1763802457007,
+        "verificationHash": "0x01bb4d35c8d27887307309302d3d3bf8b831d922561ad38e4ca6fc6e2f0776db"
+      }
+    ]
+  },
+  "0x391ecf62b424ce2f226e45e6b1cac5d5ad8ea3fa": {
+    "address": "0x391ecf62b424ce2f226e45e6b1cac5d5ad8ea3fa",
+    "createdAt": 1763802387796,
+    "credentials": [
+      {
+        "domain": "bbc.com",
+        "issuer": "self",
+        "issuedAt": 1763802459407,
+        "verificationHash": "0xc39312c2bcca2424c3bffd1632fcb4c1cff071bc907a45d5c1b92cd8647ca97c"
+      }
+    ]
+  },
+  "0x0e1084854fcc22dae04b6315a1c29f2c5c49ff49": {
+    "address": "0x0e1084854fcc22dae04b6315a1c29f2c5c49ff49",
+    "createdAt": 1763802390068,
+    "credentials": [
+      {
+        "domain": "theguardian.com",
+        "issuer": "self",
+        "issuedAt": 1763802461744,
+        "verificationHash": "0x5770716ec1cee9232e8bce8e6d24936ac5437123329971d1b6761c7a9254c40a"
+      }
+    ]
+  },
+  "0x915796bf2be8d828a238d95722203e788acf6f64": {
+    "address": "0x915796bf2be8d828a238d95722203e788acf6f64",
+    "createdAt": 1763802392382,
+    "credentials": [
+      {
+        "domain": "nytimes.com",
+        "issuer": "self",
+        "issuedAt": 1763802464116,
+        "verificationHash": "0x96e85d794f7405dd2ecd63eca558cc4de87017090437603ee02d8d5723cf0051"
+      }
+    ]
+  },
+  "0x988362e49fc4048b61fc1a5285b12b04679e8fa2": {
+    "address": "0x988362e49fc4048b61fc1a5285b12b04679e8fa2",
+    "createdAt": 1763802394835,
+    "credentials": [
+      {
+        "domain": "reuters.com",
+        "issuer": "self",
+        "issuedAt": 1763802466402,
+        "verificationHash": "0x0145859eb81bfc5b2b3d79c0640d30c4e4c8ffc0b2807794e5a77a4df6a19fc3"
+      }
+    ]
+  },
+  "0xda73b0d7307556685e3cefb702d43017677a2c26": {
+    "address": "0xda73b0d7307556685e3cefb702d43017677a2c26",
+    "createdAt": 1763802397303,
+    "credentials": [
+      {
+        "domain": "apnews.com",
+        "issuer": "self",
+        "issuedAt": 1763802468710,
+        "verificationHash": "0xa6b779a28e6968f0327c9ca6035fb6c8e3f043ea97270359795da1a3c1684e62"
+      }
+    ]
+  },
+  "0x78c20bf70abca7655345187a10cb5b05c7422cc6": {
+    "address": "0x78c20bf70abca7655345187a10cb5b05c7422cc6",
+    "createdAt": 1763802399768,
+    "credentials": [
+      {
+        "domain": "bbc.com",
+        "issuer": "self",
+        "issuedAt": 1763802471148,
+        "verificationHash": "0x9c16f39a27b80869d4cdfbc651d2bea79afee3309f49bb36f489da74211bbafa"
+      }
+    ]
+  },
+  "0xdcfb7720efb4cd9b3f8cde47b7ad30d957c3fba8": {
+    "address": "0xdcfb7720efb4cd9b3f8cde47b7ad30d957c3fba8",
+    "createdAt": 1763802402016,
+    "credentials": [
+      {
+        "domain": "theguardian.com",
+        "issuer": "self",
+        "issuedAt": 1763802473443,
+        "verificationHash": "0x90155f5f9090e58539f0347f99672b5d04515ecaeb552c1ec22d484161e80c00"
+      }
+    ]
+  },
+  "0x1a478b01f2e2a609a728a26c23e9172302535217": {
+    "address": "0x1a478b01f2e2a609a728a26c23e9172302535217",
+    "createdAt": 1763802404370,
+    "credentials": []
+  },
+  "0x7cdb9da9145c72b0ff8293b1da9a3acc4d78833e": {
+    "address": "0x7cdb9da9145c72b0ff8293b1da9a3acc4d78833e",
+    "createdAt": 1763802406638,
+    "credentials": []
+  },
+  "0xbbe436fe7547f96a6e6fa835b7e5b44b7f94fe32": {
+    "address": "0xbbe436fe7547f96a6e6fa835b7e5b44b7f94fe32",
+    "createdAt": 1763802408909,
+    "credentials": []
+  },
+  "0xeade0ede1887e807d65b8e213cb7d22e5cfbbcb2": {
+    "address": "0xeade0ede1887e807d65b8e213cb7d22e5cfbbcb2",
+    "createdAt": 1763802411248,
+    "credentials": []
+  },
+  "0xd7fee4e3c5939eedfbd15cb82e9ac0a1fd777e0a": {
+    "address": "0xd7fee4e3c5939eedfbd15cb82e9ac0a1fd777e0a",
+    "createdAt": 1763802413620,
+    "credentials": []
+  },
+  "0x3a303c03efc2d42d12ddea6386bce31c34b8d9ad": {
+    "address": "0x3a303c03efc2d42d12ddea6386bce31c34b8d9ad",
+    "createdAt": 1763802415873,
+    "credentials": []
+  },
+  "0xf48d223cd18f4e699b3db3d30bb751c4d6938952": {
+    "address": "0xf48d223cd18f4e699b3db3d30bb751c4d6938952",
+    "createdAt": 1763802418227,
+    "credentials": []
+  },
+  "0x41e5ccee9d2c3d57440936062dce4ca8f4ef161d": {
+    "address": "0x41e5ccee9d2c3d57440936062dce4ca8f4ef161d",
+    "createdAt": 1763802420580,
+    "credentials": []
+  },
+  "0x99211cd1b9798a54f913d3be20a4dcc6b18de3a5": {
+    "address": "0x99211cd1b9798a54f913d3be20a4dcc6b18de3a5",
+    "createdAt": 1763802422913,
+    "credentials": []
+  },
+  "0xd44da29e4916d38e80b219bf0a2dec52738aa287": {
+    "address": "0xd44da29e4916d38e80b219bf0a2dec52738aa287",
+    "createdAt": 1763802425278,
+    "credentials": []
+  },
+  "0x3d693bce3d5a29bf64bb61458b399ffd5f4b910b": {
+    "address": "0x3d693bce3d5a29bf64bb61458b399ffd5f4b910b",
+    "createdAt": 1763802427628,
+    "credentials": []
+  },
+  "0x44fbddeb2abad9b1a66e5f12dbed4cdfda1887b5": {
+    "address": "0x44fbddeb2abad9b1a66e5f12dbed4cdfda1887b5",
+    "createdAt": 1763802429987,
+    "credentials": []
+  },
+  "0xa2f52e9222a27e9051c48bf1c99f67ad16641449": {
+    "address": "0xa2f52e9222a27e9051c48bf1c99f67ad16641449",
+    "createdAt": 1763802432363,
+    "credentials": []
+  },
+  "0x3ed3ba05d86a67c77caf4945ad986acd0f3b8596": {
+    "address": "0x3ed3ba05d86a67c77caf4945ad986acd0f3b8596",
+    "createdAt": 1763802434783,
+    "credentials": []
+  },
+  "0xa8c9d3bc772f16c33a0660074dd941646da8f684": {
+    "address": "0xa8c9d3bc772f16c33a0660074dd941646da8f684",
+    "createdAt": 1763802437202,
+    "credentials": []
+  },
+  "0x9e5f990e606bcb7be3802f0b4718309d8f6399b1": {
+    "address": "0x9e5f990e606bcb7be3802f0b4718309d8f6399b1",
+    "createdAt": 1763802439514,
+    "credentials": []
+  },
+  "0xf3a94eee227998461e95dfbaf0bafa4d794a5061": {
+    "address": "0xf3a94eee227998461e95dfbaf0bafa4d794a5061",
+    "createdAt": 1763802441819,
+    "credentials": []
+  },
+  "0xf40519eba61596a68a49fbea863bb7365224a9b2": {
+    "address": "0xf40519eba61596a68a49fbea863bb7365224a9b2",
+    "createdAt": 1763802444207,
+    "credentials": []
+  },
+  "0xf26349de96e8c6c8a969190b5f492917bd6272f9": {
+    "address": "0xf26349de96e8c6c8a969190b5f492917bd6272f9",
+    "createdAt": 1763802446555,
+    "credentials": []
+  },
+  "0xf0a37aebb4309f63bbb7529049085a0fb9cbd367": {
+    "address": "0xf0a37aebb4309f63bbb7529049085a0fb9cbd367",
+    "createdAt": 1763802448853,
+    "credentials": []
+  },
+  "0x6b84050fdcbdaff10a9db85ef7821d54cab4becc": {
+    "address": "0x6b84050fdcbdaff10a9db85ef7821d54cab4becc",
+    "createdAt": 1763825869290,
+    "credentials": []
+  }
+}

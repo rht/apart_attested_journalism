@@ -1,0 +1,8 @@
+{
+  "minAccountAge": 2592000000,
+  "minAttestationAge": 604800000,
+  "eigenTrustIterations": 20,
+  "eigenTrustEpsilon": 0.001,
+  "eigenTrustDamping": 0.2,
+  "timeDecayFactor": 0.5
+}
