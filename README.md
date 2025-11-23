@@ -1,6 +1,6 @@
 # TrustNet: Attested Journalism
 
-CLI for attested journalism trust network with sybil attack detection.
+CLI for attested journalism trust network with sybil attack detection. [Interactive visualization](https://rht.github.io/apart_attested_journalism/)
 
 ## Overview
 

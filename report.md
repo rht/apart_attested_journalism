@@ -26,7 +26,7 @@ Aggregate trust is computed from the trust vector as **Trust(a)** = 0.25·X(a) +
 - Peer Vote Score (P): Cryptographically signed vouches using EIP-191 format. Votes are signed messages containing `address_to|vote_type|timestamp`, verified via ECDSA signature recovery. Only votes older than `min_attestation_age` (default 7 days) count. P(a) = (positive - negative) / total votes, or 0.5 if unvoted.
 - Time-Based Score (Tₜ): Penalizes accounts younger than `min_account_age` (30 days). Tₜ(a) = 0 if too young, linearly ramps 0.5→1.0 over 90 days, saturates at 1.0. Old votes decay by factor `time_decay` (0.5).
 - Graph Score (G): Modified EigenTrust with damping factor α = 0.2. Constructs normalized trust matrix C where C[i][j] = votes[i→j] / Σₖ votes[i→k], then iterates t⁽ᵏ⁺¹⁾ = α·Cᵀ·t⁽ᵏ⁾ + (1-α)·(1/n) until convergence (ε = 0.001, max 20 iterations). G(a) = converged trust value, isolating bot clusters that vouch internally but lack external trust edges. We choose the damping factor to be 0.2 to capture the “trust horizon” of about 4 hops, which needs to be more short-sighted than the well -known 6 degrees of separation of human acquaintances.
-The source code is available on GitHub: https://github.com/rht/apart_attested_journalism.
+The source code is available on GitHub: https://github.com/rht/apart_attested_journalism. Interactive visualization at https://rht.github.io/apart_attested_journalism/.
 
 # 3. Results
 
