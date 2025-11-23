@@ -1,7 +1,14 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-const DATA_DIR = './data';
+// THIS file is in: src/storage.js
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Data directory is ALWAYS: src/data/
+const DATA_DIR = path.join(__dirname, 'data');
+
 const VOTES_FILE = path.join(DATA_DIR, 'votes.json');
 const ACCOUNTS_FILE = path.join(DATA_DIR, 'accounts.json');
 const CONFIG_FILE = path.join(DATA_DIR, 'config.json');
