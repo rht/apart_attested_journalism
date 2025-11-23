@@ -1,6 +1,6 @@
 # Title
 
-Economic Finality for Journalism Identity: Multi-Dimensional Trust for Misinformation Resistance
+Economic Finality for Attested Journalism: Multi-Dimensional Trust for Misinformation Resistance
 
 # Abstract
 
@@ -9,26 +9,21 @@ Modern journalism faces coordinated AI-generated misinformation campaigns powere
 # 1. Introduction
 
 The digital age has democratized information dissemination, but at a devastating cost: the erosion of trust in journalism itself. Coordinated misinformation campaigns, powered by automated botnets and Sybil attacks, can flood social media with fabricated narratives at near-zero marginal cost. An attacker can trivially spawn thousands of fake "journalist" accounts, each posting coordinated disinformation, with no cryptographic or economic barriers to entry. This asymmetry—where truth-telling requires institutional resources while lie-spreading costs nothing—threatens the foundational role of journalism in democratic societies.
-
 Existing approaches to combat misinformation fall into three categories, each with critical limitations. Centralized rating systems like NewsGuard rely on small editorial teams (20-30 analysts) to manually score outlets, creating opacity, scaling bottlenecks, and potential bias concerns. Crowdsourced verification systems like X's Community Notes improve transparency but remain vulnerable to majority manipulation and lack cryptographic identity guarantees—nothing prevents a botnet from outvoting legitimate users. Media bias charts (e.g., Ground News) reduce complex trust questions to simple left-right spectrums, ignoring that an outlet's political leaning says nothing about whether its journalists are real humans with verifiable credentials. Fundamentally, none of these systems impose meaningful Sybil resistance—the economic and cryptographic cost of creating fake identities at scale.
-
 We draw inspiration from Bitcoin's breakthrough insight: digital scarcity becomes possible when you combine multiple independent cost layers—cryptographic proof, economic stakes, and computational work. We apply this principle to journalistic identity, asking: what if fabricating 10,000 fake journalist accounts required not just creating Ethereum wallets (trivial), but also controlling major news domain emails, convincing real humans to vouch for you, aging those accounts for months, and overcoming graph-based anomaly detection? Each layer independently raises the attack threshold; together, they make coordinated misinformation economically prohibitive.
-
-This paper presents TrustNet, a decentralized framework for attested journalism that models trust as a multi-dimensional vector rather than a single score. Our system integrates four complementary mechanisms: (1) real-world identity anchoring via C2PA/Aqua protocol email ownership proofs (requiring domain control of nytimes.com, reuters.com, etc.); (2) peer-to-peer reputation through cryptographically signed vouches (Ethereum wallet signatures); (3) temporal proof-of-age that penalizes newly created accounts; and (4) graph-based transitive trust computed via EigenTrust algorithms, which isolate bot clusters even when they vouch for each other internally. Unlike binary trust scores, this vector reveals why someone is trusted—press credentials, peer endorsement, time-tested reputation, or network position—enabling readers to make nuanced judgments.
 
 Our contributions are:
 1. A multi-dimensional trust framework that composes orthogonal Sybil resistance mechanisms (identity, social, temporal, graph-theoretic) into a unified vector model.
-2. A practical implementation combining existing standards (C2PA/Aqua content provenance, EIP-191 Ethereum signatures, PGP Web of Trust principles) without requiring custom blockchains or novel cryptography.
+2. A practical implementation combining existing standards (C2PA/Aqua Protocol content provenance, EIP-191 Ethereum signatures, PGP Web of Trust principles) without requiring custom blockchains or novel cryptography.
 3. Empirical demonstration of Sybil attack detection through network analysis, showing how bot clusters receive near-zero transitive trust scores while legitimate journalists maintain high scores across all dimensions.
 4. Open-source tooling (the tn CLI) that enables decentralized reputation building without centralized gatekeepers, preserving journalistic independence while restoring verifiable trust.
 
 # 2. Methods
 
-TrustNet is implemented as a Node.js CLI tool (`tn`) with three layers: (1) Ethereum wallet-based identity using BIP-39 mnemonics and EIP-191 signatures; (2) a REST API public ledger storing votes and accounts (centralized for proof-of-concept for now, but will be based on IPFS in the future); (3) a trust computation engine. Data structures in the public ledger include `accounts.json` (registered addresses with timestamps), `votes.json` (signed trust/distrust votes), `config.json` (system parameters), and `credentials/` (Aqua protocol email/phone number/GitHub/X/LinkedIn proofs).
+TrustNet is implemented as a Node.js CLI tool with three layers: (1) Ethereum wallet-based identity using BIP-39 mnemonics and EIP-191 signatures; (2) a REST API public registry storing votes and accounts (centralized for proof-of-concept for now, but will be based on distributed storage solutions in the future); (3) a trust computation engine. Data structures in the public registry include `accounts.json` (registered addresses with timestamps), `votes.json` (signed trust/distrust votes), `config.json` (system parameters), and `credentials/` (Aqua Protocol email/phone number/GitHub/X/LinkedIn proofs).
 Aggregate trust is computed from the trust vector as **Trust(a)** = 0.25·X(a) + 0.35·P(a) + 0.15·Tₜ(a) + 0.25·G(a), where:
-- X.509 Credential Score (X): Aqua protocol email ownership proofs similar to C2PA manifests. X(a) = 1.0 for trusted journalism domains (nytimes.com, reuters.com, etc.), 0.5 for any verified domain, 0.0 otherwise.
+- X.509-like Credential Score (X): Aqua Protocol email ownership proofs similar to C2PA manifests. X(a) = 1.0 for trusted journalism domains (nytimes.com, reuters.com, etc.), 0.5 for any verified domain, 0.0 otherwise.
 - Peer Vote Score (P): Cryptographically signed vouches using EIP-191 format. Votes are signed messages containing `address_to|vote_type|timestamp`, verified via ECDSA signature recovery. Only votes older than `min_attestation_age` (default 7 days) count. P(a) = (positive - negative) / total votes, or 0.5 if unvoted.
-- Time-Based Score (Tₜ): Penalizes accounts younger than `min_account_age` (30 days). Tₜ(a) = 0 if too young, linearly ramps 0.5→1.0 over 90 days, saturates at 1.0 after 1 year. Old votes decay by factor `time_decay` (0.5).
-- Graph Score (G): Modified EigenTrust with damping factor α = 0.85. Constructs normalized trust matrix C where C[i][j] = votes[i→j] / Σₖ votes[i→k], then iterates t⁽ᵏ⁺¹⁾ = α·Cᵀ·t⁽ᵏ⁾ + (1-α)·(1/n) until convergence (ε = 0.001, max 20 iterations). G(a) = converged trust value, isolating bot clusters that vouch internally but lack external trust edges.
+- Time-Based Score (Tₜ): Penalizes accounts younger than `min_account_age` (30 days). Tₜ(a) = 0 if too young, linearly ramps 0.5→1.0 over 90 days, saturates at 1.0. Old votes decay by factor `time_decay` (0.5).
+- Graph Score (G): Modified EigenTrust with damping factor α = 0.2. Constructs normalized trust matrix C where C[i][j] = votes[i→j] / Σₖ votes[i→k], then iterates t⁽ᵏ⁺¹⁾ = α·Cᵀ·t⁽ᵏ⁾ + (1-α)·(1/n) until convergence (ε = 0.001, max 20 iterations). G(a) = converged trust value, isolating bot clusters that vouch internally but lack external trust edges. We choose the damping factor to be 0.2 to capture the “trust horizon” of about 4 hops, which needs to be more short-sighted than the well -known 6 degrees of separation of human acquaintances.
 The source code is available on GitHub: https://github.com/rht/apart_attested_journalism.
-
