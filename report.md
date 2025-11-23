@@ -94,7 +94,7 @@ For the component analysis, each dimension independently penalized Sybil account
 Our experiment of a hypothetical network demonstrates that multi-dimensional trust vectors achieve effective Sybil resistance without centralized gatekeepers. The 282× separation between legitimate (22.56%) and Sybil (0.08%) accounts validates composing orthogonal cost layers: credential acquisition, social vouching, temporal aging, and graph-theoretic isolation. We leave the Fermi estimate of the economic attack barrier on the more realistic network to the future work.
 
 We also acknowledge the limitations of our implementation as of the creation of this report, which are left for future work:
-1. Most importantly, there should be a private trust network in addition to the public one, to prevent an adversary from gaming the algorithm if everything were public. One should be able to distrust nytimes.com without publicly disclosing of such decision.
+1. Most importantly, there should be a private trust network in addition to the public one, to prevent an adversary from gaming the algorithm if everything were public. One should be able to distrust nytimes.com without publicly disclosing such a decision.
 2. The current implementation uses centralized storage (mock REST API), creating single points of failure and censorship risk. Production deployments require distributed ledgers (e.g. IPFS + blockchain anchoring, similar to the witnessing process in the Aqua Protocol).
 3. Email credential verification currently is still a mockup. We didn't have enough time to fully establish the links, where we instead focused on the network analysis. In the future we will integrate additional credential types (GitHub commit history, X verification via followers/engagement patterns, bank KYC via the Aqua Protocol).
 4. Journalists' keys need to be revocable when compromised. We will implement a revocation mechanism via threshold cryptography.
@@ -107,8 +107,7 @@ Kamvar, S.D.; Schlosser, M.T.; Garcia-Molina, H. (2003). "The Eigentrust algorit
 
 # 6. Appendix
 
-## Security Considerations
-
+Security Considerations:
 - All votes are cryptographically signed with Ethereum private keys
 - Signature verification happens server-side
 - Vote timestamps are tamper-evident
@@ -122,4 +121,3 @@ Possible vulnerabilities:
 3. Typosquatting. nytimes.co, rеuters.com with Cyrillic characters, and insider attacks at legitimate outlets can mint valid credentials.
 4. Graph-based attacks. Bridge account compromise (2-3 colluding legitimate accounts) enables trust infiltration despite EigenTrust's 4-hop horizon. Adversaries with algorithm knowledge can engineer strategic graph topologies to maximize propagation.
 5. Network effects. New journalist exclusion (zero initial scores) creates entry barriers favoring entrenched players.
-6. Economic incentives. DDoS campaigns (botnet distrust voting) can isolate legitimate journalists.
