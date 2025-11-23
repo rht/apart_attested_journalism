@@ -89,3 +89,29 @@ For the component analysis, each dimension independently penalized Sybil account
 3. Peer Vote Score (weight 0.35): both 0.0%. All votes were younger than the 7-day `min_attestation_age` threshold, demonstrating temporal defense against rushed attack setup.
 4. Time-Based Score (weight 0.15): both 0.50%. Accounts were uniformly young (below 30-day `min_account_age`), receiving the minimum score. This dimension would further differentiate networks in longitudinal scenarios where legitimate accounts age while Sybil campaigns reset.
 
+# 4. Discussion and Conclusion
+
+Our experiment of a hypothetical network demonstrates that multi-dimensional trust vectors achieve effective Sybil resistance without centralized gatekeepers. The 282× separation between legitimate (22.56%) and Sybil (0.08%) accounts validates composing orthogonal cost layers: credential acquisition, social vouching, temporal aging, and graph-theoretic isolation. We leave the Fermi estimate of the economic attack barrier on the more realistic network to the future work.
+
+We also acknowledge the limitations of our implementation as of the creation of this report, which are left for future work:
+1. Most importantly, there should be a private trust network in addition to the public one, to prevent an adversary from gaming the algorithm if everything were public. One should be able to distrust nytimes.com without publicly disclosing of such decision.
+2. The current implementation uses centralized storage (mock REST API), creating single points of failure and censorship risk. Production deployments require distributed ledgers (e.g. IPFS + blockchain anchoring, similar to the witnessing process in the Aqua Protocol).
+3. Email credential verification currently is still a mockup. We didn't have enough time to fully establish the links, where we instead focused on the network analysis. In the future we will integrate additional credential types (GitHub commit history, X verification via followers/engagement patterns, bank KYC via the Aqua Protocol).
+4. Journalists' keys need to be revocable when compromised. We will implement a revocation mechanism via threshold cryptography.
+5. The staking mechanism has yet to be implemented.
+
+In conclusion, TrustNet applies Bitcoin's multi-layered finality to journalism, transforming coordinated misinformation from near-zero cost to six-figure undertakings through orthogonal trust dimensions, enabling decentralized and verifiable reputation infrastructure.
+
+# 5. References
+Kamvar, S.D.; Schlosser, M.T.; Garcia-Molina, H. (2003). "The Eigentrust algorithm for reputation management in P2P networks". Proceedings of the twelfth international conference on World Wide Web - WWW '03. pp. 640–651. doi:10.1145/775152.775242. ISBN 1-58113-680-3. S2CID 3102087
+
+# 6. Appendix
+
+## Security Considerations
+
+1. Temporal attacks. Patient adversaries can pre-build networks months in advance to circumvent the 7-day attestation and 30-day account aging thresholds. Identity recycling allows compromised dormant accounts to retain accumulated trust scores while being repurposed for malicious activity.
+2. Email compromises. Phishing or other methods grants attackers full X.509 benefits for targeted domains. The hardcoded trusted domain list reintroduces centralization without clear governance for additions/removals.
+3. Typosquatting. nytimes.co, rеuters.com with Cyrillic characters, and insider attacks at legitimate outlets can mint valid credentials.
+4. Graph-based attacks. Bridge account compromise (2-3 colluding legitimate accounts) enables trust infiltration despite EigenTrust's 4-hop horizon. Adversaries with algorithm knowledge can engineer strategic graph topologies to maximize propagation.
+5. Network effects. New journalist exclusion (zero initial scores) creates entry barriers favoring entrenched players.
+6. Economic incentives. DDoS campaigns (botnet distrust voting) can isolate legitimate journalists.
