@@ -30,7 +30,52 @@ The source code is available on GitHub: https://github.com/rht/apart_attested_jo
 
 # 3. Results
 
-We simulated a coordinated attack scenario: 10 legitimate journalist accounts with verified email credentials from trusted domains (nytimes.com, reuters.com, etc.) versus 20 attacker-controlled Sybil accounts without credentials. The legitimate network maintained moderate internal connectivity (~60%), while the Sybil cluster created dense internal vouching (~90%) with only 2 sparse bridge connections to legitimate accounts, mimicking real-world botnet behavior where attackers vouch for each other but struggle to gain endorsements from established journalists.
+We simulated a coordinated attack scenario: 10 legitimate journalist accounts with verified email credentials from trusted domains (nytimes.com, reuters.com, etc.) versus 20 attacker-controlled Sybil accounts without credentials. The legitimate network maintained moderate internal connectivity (~60%), while the Sybil cluster created dense internal vouching (~90%) with only 2 sparse bridge connections to legitimate accounts, mimicking real-world botnet behavior where attackers vouch for each other but struggle to gain endorsements from established journalists. The trust score is calculated from the subjective point of view of node `legitimate-0`.
+
+```
+Observer Node (Point of View):
+-------------------------------------------
+  legitimate-0 (0x6157364aB3A83aA357f769Af11314B0b573C91C1)
+
+All trust scores are calculated from this node's perspective.
+
+Analyzing Legitimate Network...
+-------------------------------------------
+  legitimate-0: 27.04% (x509: 100.0%, peer: 0.0%, time: 0.5%, graph: 7.9%)
+  legitimate-1: 27.78% (x509: 100.0%, peer: 0.0%, time: 0.5%, graph: 10.8%)
+  legitimate-2: 27.76% (x509: 100.0%, peer: 0.0%, time: 0.5%, graph: 10.8%)
+  legitimate-3: 15.24% (x509: 50.0%, peer: 0.0%, time: 0.5%, graph: 10.6%)
+  legitimate-4: 15.30% (x509: 50.0%, peer: 0.0%, time: 0.5%, graph: 10.9%)
+  legitimate-5: 27.88% (x509: 100.0%, peer: 0.0%, time: 0.5%, graph: 11.2%)
+  legitimate-6: 27.98% (x509: 100.0%, peer: 0.0%, time: 0.5%, graph: 11.6%)
+  legitimate-7: 27.27% (x509: 100.0%, peer: 0.0%, time: 0.5%, graph: 8.8%)
+  legitimate-8: 14.70% (x509: 50.0%, peer: 0.0%, time: 0.5%, graph: 8.5%)
+  legitimate-9: 14.63% (x509: 50.0%, peer: 0.0%, time: 0.5%, graph: 8.2%)
+
+Analyzing Sybil Network...
+-------------------------------------------
+  sybil-0: 0.08% (x509: 0.0%, peer: 0.0%, time: 0.5%, graph: 0.0%)
+  sybil-1: 0.08% (x509: 0.0%, peer: 0.0%, time: 0.5%, graph: 0.0%)
+  sybil-2: 0.08% (x509: 0.0%, peer: 0.0%, time: 0.5%, graph: 0.0%)
+  sybil-3: 0.08% (x509: 0.0%, peer: 0.0%, time: 0.5%, graph: 0.0%)
+  sybil-4: 0.08% (x509: 0.0%, peer: 0.0%, time: 0.5%, graph: 0.0%)
+  sybil-5: 0.08% (x509: 0.0%, peer: 0.0%, time: 0.5%, graph: 0.0%)
+  sybil-6: 0.08% (x509: 0.0%, peer: 0.0%, time: 0.5%, graph: 0.0%)
+  sybil-7: 0.08% (x509: 0.0%, peer: 0.0%, time: 0.5%, graph: 0.0%)
+  sybil-8: 0.08% (x509: 0.0%, peer: 0.0%, time: 0.5%, graph: 0.0%)
+  sybil-9: 0.08% (x509: 0.0%, peer: 0.0%, time: 0.5%, graph: 0.0%)
+  sybil-10: 0.08% (x509: 0.0%, peer: 0.0%, time: 0.5%, graph: 0.0%)
+  sybil-11: 0.08% (x509: 0.0%, peer: 0.0%, time: 0.5%, graph: 0.0%)
+  sybil-12: 0.08% (x509: 0.0%, peer: 0.0%, time: 0.5%, graph: 0.0%)
+  sybil-13: 0.08% (x509: 0.0%, peer: 0.0%, time: 0.5%, graph: 0.0%)
+  sybil-14: 0.08% (x509: 0.0%, peer: 0.0%, time: 0.5%, graph: 0.0%)
+  sybil-15: 0.08% (x509: 0.0%, peer: 0.0%, time: 0.5%, graph: 0.0%)
+  sybil-16: 0.08% (x509: 0.0%, peer: 0.0%, time: 0.5%, graph: 0.0%)
+  sybil-17: 0.08% (x509: 0.0%, peer: 0.0%, time: 0.5%, graph: 0.0%)
+  sybil-18: 0.08% (x509: 0.0%, peer: 0.0%, time: 0.5%, graph: 0.0%)
+  sybil-19: 0.08% (x509: 0.0%, peer: 0.0%, time: 0.5%, graph: 0.0%)
+
+```
 
 The trust vector approach achieved decisive separation of the overall trust scores between legitimate and Sybil accounts:
 - Legitimate network: Mean 22.56%, Median 27.27% (range 14.63%–27.98%, σ=6.21%)
