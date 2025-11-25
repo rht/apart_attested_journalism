@@ -14,6 +14,7 @@ body {
   color: #e6eef6;
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
+  min-height: 100dvh;
 }
 
 .topbar {
@@ -25,12 +26,18 @@ body {
   border-bottom: 1px solid rgba(255,255,255,0.05);
   flex-wrap: wrap;
   gap: 12px;
+  min-height: 68px;
 }
 
 .topbar h1 {
   margin: 0;
   font-size: 1.25rem;
   font-weight: 700;
+}
+
+.logo {
+  height: 36px;
+  width: auto;
 }
 
 .search {
@@ -62,10 +69,12 @@ body {
   min-width: 80px;
 }
 
+/* MAIN FIX: Use dynamic viewport units */
 .layout {
   display: flex;
-  height: calc(100vh - 68px);
   flex-direction: row;
+  height: calc(100dvh - 68px);   /* works perfectly on mobile from first load */
+  min-height: 500px;
 }
 
 .network {
@@ -103,19 +112,24 @@ body {
 
 .list .item:last-child { border-bottom: none; }
 
-/* Mobile First – Responsive Breakpoint */
+/* Mobile Responsive – now perfect */
 @media (max-width: 768px) {
-  .topbar { padding: 12px; flex-direction: column; align-items: stretch; }
+  .topbar { 
+    padding: 12px; 
+    flex-direction: column; 
+    align-items: stretch; 
+  }
   .topbar h1 { font-size: 1.3rem; text-align: center; }
   .search { max-width: none; }
 
   .layout {
     flex-direction: column;
     height: auto;
+    min-height: calc(100dvh - 68px);
   }
 
   .network {
-    height: 55vh;
+    height: 55dvh;        /* dynamic = no more cutoff */
     min-height: 300px;
   }
 
