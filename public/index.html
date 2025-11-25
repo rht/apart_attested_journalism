@@ -3,10 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <title>Trust Explorer</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  
+  <!-- THIS IS THE KEY FIX FOR MOBILE -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content" />
+  
   <link rel="stylesheet" href="/style.css" />
+  
   <!-- vis-network CDN -->
   <script src="https://unpkg.com/vis-network@9.1.2/standalone/umd/vis-network.min.js"></script>
+  
+  <!-- Tiny safety fallback for ancient browsers -->
+  <style>
+    html, body { margin: 0; height: 100dvh; }
+  </style>
 </head>
 <body>
   <div id="app">
@@ -18,29 +27,30 @@
         <button id="searchBtn">Go</button>
       </div>
     </header>
-
+    
     <main class="layout">
       <div id="network" class="network"></div>
+      
       <aside class="sidebar">
         <h3>Details</h3>
         <div id="selectedAddress">Selected: —</div>
         <div id="trustScore"></div>
-
+        
         <section>
           <h4>Received</h4>
           <div id="receivedList" class="list"></div>
         </section>
-
+        
         <section>
           <h4>Sent</h4>
           <div id="sentList" class="list"></div>
         </section>
-
+        
         <button id="clearBtn">Clear selection</button>
       </aside>
     </main>
   </div>
-
+  
   <script src="/app.js"></script>
 </body>
 </html>
