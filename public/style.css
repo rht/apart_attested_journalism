@@ -1,150 +1,244 @@
-:root {
-  --bg: #071018;
-  --panel: #0b1220;
-  --muted: #9aa6b2;
-  --accent: #1f6feb;
-}
-
-* { box-sizing: border-box; }
-
-body {
+/* === GLOBAL === */
+html, body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: var(--bg);
-  color: #e6eef6;
-  font-size: 16px;
-  -webkit-font-smoothing: antialiased;
-  min-height: 100dvh;
+  padding: 0;
+  height: 100dvh;
+  width: 100%;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #0d1117;
+  color: #f0f6fc;
 }
 
+/* === APP CONTAINER === */
+#app {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #0d1117;
+}
+
+/* === TOP BAR === */
 .topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  background: rgba(255,255,255,0.02);
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  flex-wrap: wrap;
-  gap: 12px;
-  min-height: 68px;
+  padding: 12px 18px;
+  background: #161b22;
+  border-bottom: 1px solid #30363d;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  z-index: 10;
 }
 
 .topbar h1 {
   margin: 0;
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #58a6ff;        /* GitHub blue accent */
 }
 
-.logo {
-  height: 36px;
-  width: auto;
-}
-
+/* Search */
 .search {
   display: flex;
   gap: 8px;
-  min-width: 220px;
-  flex: 1;
-  max-width: 400px;
+  align-items: center;
 }
 
 .search input {
-  flex: 1;
-  padding: 10px 12px;
+  padding: 9px 12px;
+  width: 210px;
+  border: 1px solid #30363d;
   border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: rgba(255,255,255,0.05);
-  color: white;
-  font-size: 0.95rem;
+  background: #21262d;
+  color: #f0f6fc;
+  font-size: 14px;
+  transition: all 0.2s;
 }
 
-.search button, button {
-  padding: 10px 16px;
+.search input:focus {
+  outline: none;
+  border-color: #58a6ff;
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.2);
+}
+
+/* Buttons – beautiful blue accent */
+button, .search button, .sidebar-toggle {
+  padding: 9px 16px;
   border: none;
   border-radius: 8px;
-  background: var(--accent);
+  background: #238636;           /* Rich green → replaced with GitHub success blue */
+  background: #1f6feb;           /* Primary blue – clean & modern */
   color: white;
   font-weight: 600;
+  font-size: 14px;
   cursor: pointer;
-  min-width: 80px;
+  transition: all 0.2s;
+  min-height: 40px;
 }
 
-/* MAIN FIX: Use dynamic viewport units */
+button:hover, .search button:hover, .sidebar-toggle:hover {
+  background: #1a5bc4;
+  transform: translateY(-1px);
+}
+
+button:active, .search button:active {
+  transform: translateY(0);
+}
+
+/* === MAIN LAYOUT === */
 .layout {
+  flex: 1;
   display: flex;
-  flex-direction: row;
-  height: calc(100dvh - 68px);   /* works perfectly on mobile from first load */
-  min-height: 500px;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
 }
 
+/* === NETWORK (Graph) === */
 .network {
   flex: 1;
-  background: var(--panel);
-  touch-action: pan-x pan-y pinch-zoom;
+  position: relative;
+  height: 100%;
+  min-height: 100%;
+  width: 100%;
+  background: #0d1117 !important;
 }
 
+.network > canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+}
+
+/* === SIDEBAR === */
 .sidebar {
-  width: 360px;
-  padding: 20px;
-  background: rgba(0,0,0,0.15);
-  border-left: 1px solid rgba(255,255,255,0.05);
-  overflow-y: auto;
+  width: 340px;
+  background: #161b22;
+  border-left: 1px solid #30363d;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -2px 0 10px rgba(0,0,0,0.2);
 }
 
-.sidebar h3 { margin: 0 0 16px; font-size: 1.1rem; }
-#selectedAddress { font-size: 0.9rem; word-break: break-all; margin: 8px 0 12px; opacity: 0.9; }
-#trustScore { font-size: 1.1rem; font-weight: 700; color: #a5f3fc; margin-bottom: 20px; }
-
-.list {
-  background: rgba(255,255,255,0.03);
-  border-radius: 8px;
-  padding: 10px;
-  max-height: 240px;
+#sidebarContent {
+  padding: 20px;
   overflow-y: auto;
-  font-size: 0.875rem;
+  flex: 1;
+  scrollbar-width: thin;
+  scrollbar-color: #30363d transparent;
+}
+
+#sidebarContent::-webkit-scrollbar {
+  width: 6px;
+}
+#sidebarContent::-webkit-scrollbar-track {
+  background: transparent;
+}
+#sidebarContent::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 3px;
+}
+
+/* Sidebar sections */
+.sidebar h3, .sidebar h4 {
+  color: #58a6ff;
+  margin: 0 0 12px 0;
+  font-weight: 600;
+}
+
+#selectedAddress {
+  font-size: 13px;
+  word-break: break-all;
+  background: #21262d;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #30363d;
+  margin: 8px 0 16px;
+}
+
+#trustScore {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #79c0ff;
+  margin: 8px 0 20px;
+}
+
+/* List items */
+.list {
+  margin-top: 8px;
 }
 
 .list .item {
-  padding: 10px 0;
-  border-bottom: 1px dashed rgba(255,255,255,0.1);
-  color: var(--muted);
+  width: 300px;
+  margin-bottom: 10px;
+  padding: 12px;
+  background: #21262d;
+  border-radius: 8px;
+  border: 1px solid #30363d;
+  font-size: 13.5px;
+  color: #c9d1d9;
+  transition: all 0.2s;
 }
 
-.list .item:last-child { border-bottom: none; }
+.list .item:hover {
+  background: #1a1f26;
+  border-color: #58a6ff33;
+}
 
-/* Mobile Responsive – now perfect */
-@media (max-width: 768px) {
-  .topbar { 
-    padding: 12px; 
-    flex-direction: column; 
-    align-items: stretch; 
-  }
-  .topbar h1 { font-size: 1.3rem; text-align: center; }
-  .search { max-width: none; }
+/* === MOBILE SIDEBAR TOGGLE === */
+.sidebar-toggle {
+  display: none;
+  width: 100%;
+  padding: 14px 20px;
+  background: #1f6feb;
+  color: white;
+  font-weight: 600;
+  font-size: 15px;
+  border-bottom: 1px solid #30363d;
+}
 
+/* === MOBILE RESPONSIVE === */
+@media (max-width: 900px) {
   .layout {
     flex-direction: column;
-    height: auto;
-    min-height: calc(100dvh - 68px);
   }
-
-  .network {
-    height: 55dvh;        /* dynamic = no more cutoff */
-    min-height: 300px;
-  }
-
   .sidebar {
     width: 100%;
-    border-left: none;
-    border-top: 1px solid rgba(255,255,255,0.08);
-    padding: 16px;
+    height: auto;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
   }
-
-  button, .search button {
-    width: 100%;
-    padding: 14px;
-    font-size: 1rem;
+  .sidebar.open {
+    transform: translateY(0);
   }
+  #sidebarContent {
+    max-height: 320px;
+    padding-bottom: 20px;
+  }
+  .sidebar-toggle {
+    display: block;
+  }
+  .network {
+    height: calc(100vh - 58px);
+    padding-bottom: 52px; /* space for toggle button */
+  }
+}
 
-  .list { max-height: 180px; }
+@media (max-width: 600px) {
+  .search input {
+    width: 140px;
+    font-size: 15px;
+  }
+  .topbar h1 {
+    font-size: 1.2rem;
+  }
+  #sidebarContent {
+    max-height: 300px;
+  }
 }
